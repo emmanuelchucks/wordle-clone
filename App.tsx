@@ -23,9 +23,9 @@ function App() {
   const letters = word.split("");
   const cells = letters.map((_) => "");
 
-  const [rows, setRows] = useState(
-    new Array(NUMBER_OF_TRIES).fill("").map((_) => cells)
-  );
+  const emptyRows = new Array(NUMBER_OF_TRIES).fill("").map((_) => cells);
+
+  const [rows, setRows] = useState(emptyRows);
   const [currentRow, setCurrentRow] = useState(0);
   const [currentCell, setCurrentCell] = useState(0);
   const [gameState, setGameState] = useState<"won" | "lost" | "playing">(
@@ -131,6 +131,13 @@ function App() {
     Alert.alert("Copied to clipboard");
   };
 
+  const restartGame = () => {
+    setRows(emptyRows);
+    setCurrentRow(0);
+    setCurrentCell(0);
+    setGameState("playing");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
@@ -158,14 +165,20 @@ function App() {
             ))}
           </View>
         ))}
-        <View style={styles.credit}>
-          <Pressable
-            onPress={() => Linking.openURL("https://www.emmanuelchucks.com")}
-          >
-            <Text style={styles.creditText}>by Papi</Text>
-          </Pressable>
-        </View>
       </ScrollView>
+
+      {gameState === "lost" && (
+        <Pressable style={styles.restartButton} onPress={restartGame}>
+          <Text style={styles.restartButtonText}>Restart</Text>
+        </Pressable>
+      )}
+
+      <Pressable
+        onPress={() => Linking.openURL("https://www.emmanuelchucks.com")}
+        style={styles.credit}
+      >
+        <Text style={styles.creditText}>by Papi</Text>
+      </Pressable>
 
       <Keyboard
         onKeyPressed={handlePress}
@@ -221,10 +234,24 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
 
+  restartButton: {
+    alignSelf: "center",
+    marginVertical: 40,
+  },
+
+  restartButtonText: {
+    backgroundColor: colors.secondary,
+    color: colors.lightgrey,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+
   credit: {
-    flex: 1,
-    alignItems: "center",
-    marginTop: 20,
+    alignSelf: "center",
+    justifyContent: "flex-end",
+    marginBottom: 20,
   },
 
   creditText: {
