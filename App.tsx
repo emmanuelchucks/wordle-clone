@@ -11,6 +11,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Keyboard from "./components/Keyboard";
 import { CLEAR, colors, colorsToEmoji, ENTER } from "./lib/utils";
 import words from "./lib/words";
