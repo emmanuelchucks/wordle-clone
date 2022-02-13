@@ -5,7 +5,6 @@ import {
   Alert,
   Linking,
   Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -16,11 +15,12 @@ import Keyboard from "./components/Keyboard";
 import { CLEAR, colors, colorsToEmoji, ENTER } from "./lib/utils";
 import words from "./lib/words";
 
-const word = words[Math.floor(Math.random() * words.length)];
+const getWord = () => words[Math.floor(Math.random() * words.length)];
 const NUMBER_OF_TRIES = 6;
 const copyArray = (arr: string[][]) => [...arr.map((item) => [...item])];
 
 function App() {
+  const [word, setWord] = useState(getWord());
   const letters = word.split("");
   const cells = letters.map((_) => "");
 
@@ -111,7 +111,10 @@ function App() {
       ]);
       setGameState("won");
     } else if (currentRow === NUMBER_OF_TRIES) {
-      Alert.alert("Game Over", "😢 Try again?");
+      Alert.alert(
+        "Game Over",
+        `The word is ${word.toUpperCase()}. 😢 Try again?`
+      );
       setGameState("lost");
     }
   };
@@ -129,10 +132,14 @@ function App() {
       .join("\n");
 
     Clipboard.setString(textToShare);
-    Alert.alert("Copied to clipboard");
+    Alert.alert(
+      "Copied to clipboard!",
+      "You can now share your score on social media."
+    );
   };
 
   const restartGame = () => {
+    setWord(getWord());
     setRows(emptyRows);
     setCurrentRow(0);
     setCurrentCell(0);
@@ -168,7 +175,7 @@ function App() {
         ))}
       </ScrollView>
 
-      {gameState === "lost" && (
+      {gameState !== "playing" && (
         <Pressable style={styles.restartButton} onPress={restartGame}>
           <Text style={styles.restartButtonText}>Restart</Text>
         </Pressable>
