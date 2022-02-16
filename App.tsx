@@ -53,7 +53,7 @@ function App() {
     if (key === ENTER) {
       if (currentCell < letters.length) return;
 
-      setCurrentRow(currentRow + 1);
+      setCurrentRow((currentRow) => currentRow + 1);
       setCurrentCell(0);
 
       return;
@@ -62,7 +62,7 @@ function App() {
     if (currentCell < newRows[currentRow].length) {
       newRows[currentRow][currentCell] = key;
       setRows(newRows);
-      setCurrentCell(currentCell + 1);
+      setCurrentCell((currentCell) => currentCell + 1);
     }
   };
 
