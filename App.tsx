@@ -16,15 +16,19 @@ import { CLEAR, colors, colorsToEmoji, ENTER } from "./lib/utils";
 import words from "./lib/words";
 
 const getWord = () => words[Math.floor(Math.random() * words.length)];
-const NUMBER_OF_TRIES = 6;
-const copyArray = (arr: string[][]) => [...arr.map((item) => [...item])];
 
 function App() {
   const [word, setWord] = useState(getWord());
   const letters = word.split("");
-  const cells = letters.map((_) => "");
 
-  const emptyRows = new Array(NUMBER_OF_TRIES).fill("").map((_) => cells);
+  const emptyRows = [
+    ["", "", "", "", ""],
+    ["", "", "", "", ""],
+    ["", "", "", "", ""],
+    ["", "", "", "", ""],
+    ["", "", "", "", ""],
+    ["", "", "", "", ""],
+  ];
 
   const [rows, setRows] = useState(emptyRows);
   const [currentRow, setCurrentRow] = useState(0);
@@ -36,16 +40,17 @@ function App() {
   const handlePress = (key: string) => {
     if (gameState !== "playing") return;
 
-    const newRows = copyArray(rows);
-
     if (key === CLEAR) {
       const previousCell = currentCell - 1;
 
       if (previousCell < 0) return;
 
-      newRows[currentRow][previousCell] = "";
-      setRows(newRows);
-      setCurrentCell(previousCell);
+      setRows((rows) => {
+        rows[currentRow][previousCell] = "";
+        return rows;
+      });
+
+      setCurrentCell((currentCell) => currentCell - 1);
 
       return;
     }
@@ -59,9 +64,12 @@ function App() {
       return;
     }
 
-    if (currentCell < newRows[currentRow].length) {
-      newRows[currentRow][currentCell] = key;
-      setRows(newRows);
+    if (currentCell < letters.length) {
+      setRows((rows) => {
+        rows[currentRow][currentCell] = key;
+        return rows;
+      });
+
       setCurrentCell((currentCell) => currentCell + 1);
     }
   };
@@ -110,7 +118,7 @@ function App() {
         { text: "Share", onPress: shareScore },
       ]);
       setGameState("won");
-    } else if (currentRow === NUMBER_OF_TRIES) {
+    } else if (currentRow === emptyRows.length) {
       Alert.alert(
         "Game Over",
         `The word is ${word.toUpperCase()}. 😢 Try again?`
